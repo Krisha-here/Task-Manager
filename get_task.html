@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Get Task</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fceff9, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .task-card {
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+      form > *:not(:last-child) {
+     margin-bottom: 16px;
+    }
+
+
+    h2 {
+      text-align: center;
+      color: #333;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    label {
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 14px;
+      background-color: #f5f5f5;
+      font-size: 14px;
+      margin-top: 4px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      background-color: #fff5fd;
+      box-shadow: 0 0 0 2px #ffb3e1;
+    }
+
+    button {
+      padding: 14px;
+      border: none;
+       margin-top: 8px;
+      border-radius: 16px;
+      background: linear-gradient(to right, #ffa5c8, #ffd6d6);
+      color: #333;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(255, 182, 193, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+
+    .result-box {
+      background-color: #ffffffc9;
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 14px;
+      color: #333;
+      white-space: pre-wrap;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+  </style>
+</head>
+<body>
+  <div class="task-card">
+    <h2>Get Task</h2>
+    <form id="getTaskForm">
+      <div>
+        <label for="task_id">Task ID</label>
+        <input type="number" id="task_id" required min="1" placeholder="Enter Task ID" />
+      </div>
+      <button type="submit">Find Task</button>
+    </form>
+    <div id="result" class="result-box" style="display: none;"></div>
+  </div>
+
+  <script>
+    document.getElementById("getTaskForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const taskId = document.getElementById("task_id").value.trim();
+
+      if (!taskId || isNaN(taskId)) {
+        alert("Please enter a valid Task ID.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:5000/tasks/${taskId}`);
+        const data = await response.json();
+
+        const resultBox = document.getElementById("result");
+        if (response.ok && !data.error) {
+          resultBox.innerHTML = `
+             <b>Title:</b> ${data.title}<br>
+             <b>Description:</b> ${data.description || "-"}<br>
+             <b>Priority:</b> ${data.priority}<br>
+             <b>Due Date:</b> ${data.due_date}<br>
+             <b>Status:</b> ${data.status}<br>
+             <b>Assigned To:</b> ${data.assigned_to || "Not assigned"}
+          `;
+          resultBox.style.display = "block";
+        } else {
+          resultBox.innerHTML = ` ${data.error || "Task not found."}`;
+          resultBox.style.display = "block";
+        }
+      } catch (err) {
+        alert(" Could not connect to server.");
+      }
+    });
+  </script>
+</body>
+</html>

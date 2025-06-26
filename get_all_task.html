@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Tasks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fceff9, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .task-card {
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-height: 90vh;
+      overflow: hidden;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    button {
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(to right, #ffa5c8, #ffd6d6);
+      color: #333;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(255, 182, 193, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+
+    .task-list {
+      overflow-y: auto;
+      max-height: 350px;
+      padding-right: 10px;
+    }
+
+    .task-item {
+      background-color: #ffffffcc;
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      font-size: 14px;
+      color: #333;
+    }
+
+    .task-item b {
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <div class="task-card">
+    <h2>All Tasks</h2>
+    <button onclick="fetchTasks()">Load All Tasks</button>
+    <div id="taskList" class="task-list"></div>
+  </div>
+
+  <script>
+    async function fetchTasks() {
+      const taskList = document.getElementById("taskList");
+      taskList.innerHTML = "Loading...";
+
+      try {
+        const response = await fetch("http://localhost:5000/tasks");
+        const data = await response.json();
+
+        if (response.ok && data.tasks && data.tasks.length > 0) {
+          taskList.innerHTML = "";
+          data.tasks.forEach(task => {
+            const div = document.createElement("div");
+            div.classList.add("task-item");
+            div.innerHTML = `
+              <b>Title:</b> ${task.title}<br>
+              <b>Description:</b> ${task.description || "-"}<br>
+              <b>Priority:</b> ${task.priority}<br>
+              <b>Due Date:</b> ${task.due_date}<br>
+              <b>Status:</b> ${task.status}<br>
+              <b>Assigned To:</b> ${task.assigned_to || "Not assigned"}
+            `;
+            taskList.appendChild(div);
+          });
+        } else {
+          taskList.innerHTML = "No tasks found.";
+        }
+      } catch (error) {
+        taskList.innerHTML = "Failed to load tasks.";
+      }
+    }
+  </script>
+</body>
+</html>

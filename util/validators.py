@@ -68,13 +68,13 @@ def validate_due_date(due_date):
     if not due_date:
         raise ValidationError("Due date cannot be empty", field="due_date", value=due_date)
     try:
-        date = datetime.strptime(due_date, "%d-%m-%Y").date()
+        date = datetime.strptime(due_date, "%Y-%m-%d").date()
         today = datetime.today().date()
         if date < today:
             raise ValidationError("Due date cannot be in the past", field="due_date", value=due_date)
         return date
     except ValueError:
-        raise ValidationError("Due date must be in DD-MM-YYYY format", field="due_date", value=due_date)
+        raise ValidationError("Due date must be in yyyy-mm-dd format", field="due_date", value=due_date)
     
 
 

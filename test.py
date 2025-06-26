@@ -1,7 +1,7 @@
 import requests
 
 BASE_URL = "http://127.0.0.1:5000"
-
+"""
 # 1. Create a User
 user_data = {
     "user_id": 101,
@@ -12,10 +12,9 @@ print("\n Creating User:")
 response = requests.post(f"{BASE_URL}/user/create", json=user_data)
 print("Status Code:", response.status_code)
 print("Response:", response.json())
-
+"""
 # 2. Create a Task
 task_data = {
-    "task_id": 201,
     "title": "Complete Internship Task",
     "description": "Implement Flask API endpoints for Task Manager",
     "priority": "High",
@@ -23,10 +22,10 @@ task_data = {
     "status": "To Do"
 }
 print("\n Creating Task:")
-response = requests.post(f"{BASE_URL}/task/create", json=task_data)
+response = requests.post(f"{BASE_URL}/tasks", json=task_data)
 print("Status Code:", response.status_code)
 print("Response:", response.json())
-
+"""
 # 3. Assign Task to User
 print("\n Assigning Task to User:")
 response = requests.post(f"{BASE_URL}/assign/201/to/101")
@@ -63,3 +62,4 @@ response = requests.delete(f"{BASE_URL}/task/delete/201")
 print("Status Code:", response.status_code)
 print("Response:", response.json())
 
+"""

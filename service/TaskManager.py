@@ -3,6 +3,8 @@ from util.db import get_connection
 from util.exception import (InvalidInputError,DuplicateTaskException,DuplicateUserException,ValidationError,TaskNotFoundException,
                             UserNotFoundException,EmptyTaskListException)
 from util.validators import validate_task_id,validate_user_id,validate_priority,validate_due_date,validate_status,validate_title
+from datetime import datetime
+
 class TaskManager:
     def __init__(self):
         print("TaskManager initialized")
@@ -15,10 +17,7 @@ class TaskManager:
         - ValidationError
         - DuplicateTaskException
     """
-        try:
-            task_id=int(data.get("task_id"))
-        except (ValueError,TypeError) as e:
-            raise InvalidInputError("Task id must be integer",original_exception=e) from e
+        print("Received Data:", data)
         title=data.get("title")
         description=data.get("description") 
         priority=data.get("priority")
@@ -26,19 +25,55 @@ class TaskManager:
         due_date=data.get("due_date")
         due_date=validate_due_date(due_date)
         status=data.get("status")
+        assigned_to = data.get("assigned_to")
+        if assigned_to is not None:
+            try:
+                assigned_to = int(assigned_to)
+            except ValueError:
+                raise ValidationError("Assigned_to must be an integer", field="assigned_to", value=assigned_to)
+            validate_user_id(assigned_to)
         status=validate_status(status)
-        if not(validate_task_id(task_id) and validate_title(title)):
+        if not(validate_title(title)):
             raise ValidationError("One or more validation Failed")
-        conn=get_connection()
-        cursor=conn.cursor()
-        cursor.execute("SELECT * FROM Task WHERE task_id = %s",(task_id,))
-        if cursor.fetchone():
-            conn.close()
-            raise DuplicateTaskException(f"Task with ID {task_id}already exists",task_id=task_id)
-        cursor.execute("INSERT INTO Task VALUES(%s,%s,%s,%s,%s,%s,NULL)",(task_id,title,description,priority,due_date,status))
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO Task(title, description, priority, due_date, status, assigned_to)VALUES (%s, %s, %s, %s, %s, %s)", (title, description, priority, due_date, status, assigned_to))
         conn.commit()
+        print("Task inserted into DB")
         conn.close()
-        return {"message": "Task created successfully", "task_id": task_id}
+
+        return {"message": "Task created successfully"}
+    
+    def update_task_status(self, task_id, new_status):
+        """
+        Updates the status of a specific task.
+        """
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("UPDATE tasks SET status = %s WHERE task_id = %s", (new_status, task_id))
+            conn.commit()
+        except Exception as e:
+            print("Error:", e)
+        finally:
+            cursor.close()
+            conn.close()
+
+    def update_task_priority(self, task_id, new_priority):
+        """
+        Updates the priority of a specific task.
+        """
+        try:
+            conn = get_connection()
+            cursor = conn.cursor()
+            cursor.execute("UPDATE tasks SET priority = %s WHERE task_id = %s", (new_priority, task_id))
+            conn.commit()
+        except Exception as e:
+            print("Error:", e)
+        finally:
+            cursor.close()
+            conn.close()
 
 
     def delete_task(self,task_id):
@@ -156,7 +191,7 @@ class TaskManager:
             cursor.execute("SELECT * FROM User WHERE user_id = %s",(user_id,))#check for duplicate
             if cursor.fetchone():
                 raise DuplicateUserException(f"User with ID {user_id} already exists")
-            cursor.execute("INSERT INTO User VALUES(%s,%s,%s)",(user_id,name,email))#creating new users
+            cursor.execute("INSERT INTO User(name, email) VALUES(%s,%s)",(name,email))#creating new users
             conn.commit()
             conn.close()
             return{"message":"User created successfully"}

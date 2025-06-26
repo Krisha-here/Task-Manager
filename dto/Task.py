@@ -10,6 +10,18 @@ class Task:
         self.status = status
         self.assigned_to = assigned_to  
 
+    def update_status(self, new_status):
+        """
+        Updates the status of the task.
+        """
+        self.status = new_status
+
+    def update_priority(self, new_priority):
+        """
+        Updates the priority of the task.
+        """
+        self.priority = new_priority
+
     def to_dict(self):
         return {
             "task_id": self.task_id,

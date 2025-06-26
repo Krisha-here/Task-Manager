@@ -3,13 +3,13 @@ CREATE DATABASE task_manager;
 USE task_manager;
 
 CREATE TABLE User (
-    user_id INT PRIMARY KEY,
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100)
 );
 
 CREATE TABLE Task (
-    task_id INT PRIMARY KEY,
+    task_id INT PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     priority VARCHAR(20) NOT NULL,
