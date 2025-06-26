@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Create User</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fceff9, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .user-card {
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    form > *:not(:last-child) {
+    margin-bottom: 16px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      font-weight: 600;
+      font-size: 24px;
+    }
+
+    label {
+      font-weight: 500;
+      color: #444;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 14px;
+      background-color: #f5f5f5;
+      font-size: 14px;
+      margin-top: 4px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      background-color: #fff5fd;
+      box-shadow: 0 0 0 2px #ffb3e1;
+    }
+
+    button {
+      padding: 14px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(to right, #ffa5c8, #ffd6d6);
+      color: #333;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(255, 182, 193, 0.3);
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+    }
+  </style>
+</head>
+<body>
+  <div class="user-card">
+    <h2>Create User</h2>
+    <form id="userForm">
+      <div>
+        <label for="name">Name</label>
+        <input type="text" id="name" required placeholder="Enter name" />
+      </div>
+
+      <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" required placeholder="example@email.com" />
+      </div>
+
+      <button type="submit">Create User</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("userForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      if (!name || !email) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      const data = {
+        name: name,
+        email: email
+      };
+
+      try {
+        const response = await fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.message) {
+          alert(result.message);
+          e.target.reset();
+        } else {
+          alert(result.error || "Something went wrong.");
+        }
+      } catch (err) {
+        alert("Failed to connect to the server.");
+      }
+    });
+  </script>
+</body>
+</html>

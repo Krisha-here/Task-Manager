@@ -1,6 +1,6 @@
 from dto.Task import Task
 from util.db import get_connection
-from util.exception import (InvalidInputError,DuplicateTaskException,DuplicateUserException,ValidationError,TaskNotFoundException,
+from util.exception import (InvalidInputError,ValidationError,TaskNotFoundException,
                             UserNotFoundException,EmptyTaskListException)
 from util.validators import validate_task_id,validate_user_id,validate_priority,validate_due_date,validate_status,validate_title
 from datetime import datetime
@@ -15,7 +15,6 @@ class TaskManager:
         Raises:
         - InvalidInputError
         - ValidationError
-        - DuplicateTaskException
     """
         print("Received Data:", data)
         title=data.get("title")
@@ -174,27 +173,17 @@ class TaskManager:
     def create_user(self,data):
         """Creates new users.
         Validates user_id and name
-        Raises ValidationError if validation fails
-        Raises InvalidInputError if User ID id non numeric
-        Raises DuplicateUserException if User ID already exists"""
-        try:
-            user_id=int(data.get("user_id"))
-        except ValueError as e:
-            raise InvalidInputError("User id must be integer",original_exception=e) from e
-        else:
-            name=data.get("name")
-            email=data.get("email")
-            if not (validate_user_id(user_id) and validate_title(name)):
-                raise ValidationError("One or more Validation Error")
-            conn=get_connection()
-            cursor=conn.cursor()
-            cursor.execute("SELECT * FROM User WHERE user_id = %s",(user_id,))#check for duplicate
-            if cursor.fetchone():
-                raise DuplicateUserException(f"User with ID {user_id} already exists")
-            cursor.execute("INSERT INTO User(name, email) VALUES(%s,%s)",(name,email))#creating new users
-            conn.commit()
-            conn.close()
-            return{"message":"User created successfully"}
+        Raises ValidationError if validation fails"""
+        name=data.get("name")
+        email=data.get("email")
+        if not validate_title(name):
+            raise ValidationError("One or more Validation Error")
+        conn=get_connection()
+        cursor=conn.cursor()
+        cursor.execute("INSERT INTO User(name, email) VALUES(%s,%s)",(name,email))#creating new users
+        conn.commit()
+        conn.close()
+        return{"message":"User created successfully"}
 
     def assign_task_to_user(self, task_id, user_id):
         """Assigns the task to an user

@@ -1,6 +1,6 @@
 from flask import Flask , request , jsonify
 from service.TaskManager import TaskManager
-from util.exception import ValidationError,InvalidInputError,DuplicateTaskException,DuplicateUserException,TaskNotFoundException,EmptyTaskListException,UserNotFoundException
+from util.exception import ValidationError,InvalidInputError,TaskNotFoundException,EmptyTaskListException,UserNotFoundException
 from flask_cors import CORS
 
 
@@ -20,7 +20,7 @@ def create():
         print("Received JSON:", data)  
         result = task_manager.create_task(data)
         return jsonify(result), 201
-    except (InvalidInputError, ValidationError, DuplicateTaskException) as e:
+    except (InvalidInputError, ValidationError) as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
         import traceback
@@ -88,7 +88,7 @@ def create_user():
         data = request.json
         result = task_manager.create_user(data)
         return jsonify(result)
-    except (ValidationError, DuplicateUserException, InvalidInputError) as e:
+    except (ValidationError, InvalidInputError) as e:
         return jsonify({"error": str(e)})
     
 @app.route("/users/<int:user_id>/tasks/<int:task_id>", methods=["POST"])
@@ -101,7 +101,7 @@ def assign(task_id,user_id):
         return jsonify(result)
     except (ValidationError,UserNotFoundException,TaskNotFoundException) as e:
         return jsonify({"error": str(e)})
-    
+
 @app.route('/tasks/<int:task_id>/status', methods=['PUT'])
 def update_status(task_id):
     data = request.json

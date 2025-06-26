@@ -1,6 +1,6 @@
 from service.TaskManager import TaskManager
 from util.exception import (TaskManagerException,TaskNotFoundException,UserNotFoundException,InvalidInputError,
-                            ValidationError,DuplicateTaskException,DuplicateUserException,EmptyTaskListException)
+                            ValidationError,EmptyTaskListException)
                               
 def main():
     tm=TaskManager()
@@ -25,7 +25,7 @@ def main():
             if choice == 1:
                 try:
                    print(tm.create_task())
-                except (DuplicateTaskException, ValidationError) as e:
+                except ValidationError as e:
                     print(f"Error: {e}")
 
             elif choice == 2:
@@ -80,7 +80,7 @@ def main():
             elif choice == 7:
                 try:
                     print(tm.create_user())
-                except (DuplicateUserException, ValidationError,InvalidInputError) as e:
+                except (ValidationError,InvalidInputError) as e:
                     print(f"Error: {e.args[0]}")
                     if isinstance(e, InvalidInputError) and e.original_exception:
                         print(f"Details: {e.original_exception}")

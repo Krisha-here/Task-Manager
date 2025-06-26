@@ -28,18 +28,6 @@ class UserNotFoundException(TaskManagerException):
         super().__init__(message)
         self.user_id=user_id
 
-class DuplicateTaskException(TaskManagerException):
-    """Raised when the task with the task id already exists"""
-    def __init__(self, message="Task already exists",task_id=None):
-        super().__init__(message)
-        self.task_id=task_id
-
-class DuplicateUserException(TaskManagerException):
-    """Raised when another user with the same id exists"""
-    def __init__(self, message="User already exists",user_id=None):
-        super().__init__(message)
-        self.user_id=user_id
-
 class EmptyTaskListException(TaskManagerException):
     """Raised when task list is to be displayed but the list is empty"""
     def __init__(self, message="No Task"):
