@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Task Manager Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fceff9, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,192,203,0.2);
+      z-index: 0;
+    }
+    body::before {
+      width: 250px;
+      height: 250px;
+      top: -80px;
+      left: -80px;
+    }
+    body::after {
+      width: 250px;
+      height: 250px;
+      bottom: -80px;
+      right: -80px;
+    }
+
+    .container {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 450px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #333;
+      text-align: center;
+    }
+
+    p.subtitle {
+      font-size: 14px;
+      color: #555;
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+
+    a.button {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      background: linear-gradient(to right, #ffa5c8, #ffd6d6);
+      border-radius: 12px;
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      font-size: 14px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    a.button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(255,182,193,0.3);
+    }
+
+    @media (max-width: 480px) {
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">📋</div>
+    <h1>Task Manager Dashboard</h1>
+    <p class="subtitle">Manage your tasks and users effortlessly.</p>
+    <div class="button-grid">
+      <a href="create_user.html" class="button">Create User</a>
+      <a href="create_task.html" class="button">Create Task</a>
+      <a href="get_all_task.html" class="button">View All Tasks</a>
+      <a href="get_task_by_status.html" class="button">View by Status</a>
+      <a href="get_task_by_user.html" class="button">View by User</a>
+      <a href="get_task.html" class="button">Get Single Task</a>
+      <a href="delete_task.html" class="button">Delete Task</a>
+      <a href="assign_task_to_user.html" class="button">Assign Task</a>
+    </div>
+  </div>
+</body>
+</html>

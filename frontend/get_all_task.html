@@ -5,10 +5,7 @@
   <title>All Tasks</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
@@ -18,7 +15,6 @@
       align-items: center;
       height: 100vh;
     }
-
     .task-card {
       backdrop-filter: blur(16px) saturate(180%);
       -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -33,37 +29,30 @@
       max-height: 90vh;
       overflow: hidden;
     }
-
     h2 {
       text-align: center;
       color: #333;
       font-weight: 600;
       font-size: 24px;
     }
-
     button {
-      padding: 14px;
+      padding: 12px;
       border: none;
-      border-radius: 16px;
+      border-radius: 14px;
       background: linear-gradient(to right, #ffa5c8, #ffd6d6);
       color: #333;
       font-weight: bold;
-      font-size: 15px;
+      font-size: 14px;
       cursor: pointer;
       box-shadow: 0 5px 10px rgba(255, 182, 193, 0.3);
       transition: transform 0.2s ease;
     }
-
-    button:hover {
-      transform: scale(1.03);
-    }
-
+    button:hover { transform: scale(1.03); }
     .task-list {
       overflow-y: auto;
       max-height: 350px;
       padding-right: 10px;
     }
-
     .task-item {
       background-color: #ffffffcc;
       border-radius: 12px;
@@ -73,9 +62,21 @@
       font-size: 14px;
       color: #333;
     }
-
-    .task-item b {
-      color: #111;
+    .task-item b { color: #111; }
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: #f5f5f5;
+      font-size: 13px;
+      margin-top: 6px;
+      outline: none;
+      transition: 0.2s;
+    }
+    select:focus {
+      background-color: #fff5fd;
+      box-shadow: 0 0 0 2px #ffb3e1;
     }
   </style>
 </head>
@@ -101,12 +102,29 @@
             const div = document.createElement("div");
             div.classList.add("task-item");
             div.innerHTML = `
+              <b>Task ID:</b> ${task.task_id}<br>
               <b>Title:</b> ${task.title}<br>
               <b>Description:</b> ${task.description || "-"}<br>
               <b>Priority:</b> ${task.priority}<br>
               <b>Due Date:</b> ${task.due_date}<br>
               <b>Status:</b> ${task.status}<br>
-              <b>Assigned To:</b> ${task.assigned_to || "Not assigned"}
+              <b>Assigned To:</b> ${task.assigned_to || "Not assigned"}<br><br>
+
+              <label>Update Status:</label>
+              <select onchange="updateStatus(${task.task_id}, this.value)">
+                <option value="">Select Status</option>
+                <option value="To Do">To Do</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+              </select>
+
+              <label>Update Priority:</label>
+              <select onchange="updatePriority(${task.task_id}, this.value)">
+                <option value="">Select Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
             `;
             taskList.appendChild(div);
           });
@@ -117,6 +135,47 @@
         taskList.innerHTML = "Failed to load tasks.";
       }
     }
+
+    async function updateStatus(taskId, newStatus) {
+      if (!newStatus) return;
+      try {
+        const response = await fetch(`http://localhost:5000/tasks/${taskId}/status`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message || "Status updated.");
+          fetchTasks();
+        } else {
+          alert(data.error || "Failed to update status.");
+        }
+      } catch (error) {
+        alert("Could not connect to server.");
+      }
+    }
+
+    async function updatePriority(taskId, newPriority) {
+      if (!newPriority) return;
+      try {
+        const response = await fetch(`http://localhost:5000/tasks/${taskId}/priority`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ priority: newPriority })
+        });
+        const data = await response.json();
+        if (response.ok) {
+          alert(data.message || "Priority updated.");
+          fetchTasks();
+        } else {
+          alert(data.error || "Failed to update priority.");
+        }
+      } catch (error) {
+        alert("Could not connect to server.");
+      }
+    }
   </script>
 </body>
 </html>
+

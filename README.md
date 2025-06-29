@@ -1,74 +1,90 @@
-#  Task Manager System (Python + Flask + MySQL)
+# Task Manager System (Python + Flask + MySQL)
 
-A Task Management System built using Python, Flask, and integrated with a MySQL database. The system allows users to create, update, delete, assign, and view tasks with full validation and exception handling.
-
----
-
-##  Features
-
-- Create and manage users
-- Create, assign, and delete tasks
-- View tasks by user or status
-- Validations for dates, input types, and duplicates
-- Integrated with **MySQL** database
-- Clear exception handling & custom error messages
-- **Now includes RESTful API using Flask**
+A **Task Management System** built using **Python, Flask, and MySQL**, providing **RESTful API endpoints** and a **decoupled frontend** for creating, updating, deleting, assigning, and viewing tasks with **validation, structured exception handling, and modular architecture**.
 
 ---
 
-##  Project Structure
+## Features
 
-```
+Create, view, and manage **users**  
+Create, assign, view, update, and delete **tasks**  
+View tasks by **user** or **status**  
+Integrated **validation** for input types, dates, and duplicate entries  
+Uses **MySQL database** for persistent storage  
+**RESTful API architecture with Flask** for decoupled frontend consumption  
+Clean, layered architecture with DTOs, validators, and custom exceptions
+
+---
+
+## Project Structure
+
+\`\`\`
 Task_Manager_System/
-│
-├── main/
-│   └── main.py               # CLI entry point (optional)
 │
 ├── app.py                    # Flask app with REST API endpoints
 │
-├── dto/
-│   ├── Task.py               # Task class definition with to_dict()
-│   └── User.py               # User class (minimal usage)
+├── dto/                      # Data Transfer Objects
+│   ├── Task.py
+│   └── user.py
 │
-├── service/
-│   └── TaskManager.py        # All business logic + DB operations
+├── frontend/                 # Decoupled HTML/JS frontend
+│   ├── index.html            # Acts as the home page of the frontend
+│   ├── add_task.html
+│   ├── get_all_task.html
+│   ├── get_task.html
+│   ├── delete_task.html
+│   ├── get_task_by_user.html
+│   ├── get_task_by_status.html
+│   └── assign_task_to_user.html
 │
-├── util/
-│   ├── db.py                 # Database connection setup
-│   ├── exception.py          # Custom exceptions
-│   └── validators.py         # Input/data validation logic
+├── service/                  # Business logic
+│   └── TaskManager.py
 │
-├── setup.sql                 # SQL schema to create necessary tables
-├── test.py                   # Sample POST request testing
-└── README.md                 # Project overview and instructions
-```
+├── util/                     # Utilities
+│   ├── db.py
+│   ├── exception.py
+│   └── validators.py
+│
+├── setup.sql                 # SQL schema for database setup
+├── requirements.txt          # Dependency list
+└── README.md                 # Project documentation (this file)
+\`\`\`
 
 ---
 
-##  Setup Instructions
+## ⚙️ Setup Instructions
 
-### 1. Create and Activate Virtual Environment
-```bash
+### 1.Clone the Repository
+\`\`\`bash
+git clone <repo-url>
+cd Task_Manager_System
+\`\`\`
+
+### 2.Create and Activate Virtual Environment
+\`\`\`bash
 python -m venv venv
-.\venv\Scripts\activate   # On Windows
-```
+# On Windows
+.\venv\Scripts\activate
+# On Linux/macOS
+source venv/bin/activate
+\`\`\`
 
-### 2. Install Dependencies
-```bash
-pip install flask mysql-connector-python requests
-```
+### 3.Install Dependencies
+\`\`\`bash
+pip install flask mysql-connector-python flask-cors requests
+\`\`\`
+*(Or run \`pip install -r requirements.txt\` if it is updated.)*
 
-### 3. Set Up Database
-In your MySQL client or PopSQL:
-```sql
+### 4.Set Up MySQL Database
+Run the SQL script to create the required database and tables:
+\`\`\`sql
 SOURCE setup.sql;
-```
+\`\`\`
+Or manually execute the contents of \`setup.sql\` in your MySQL client.
 
-Or manually run the contents of `setup.sql`.
-
-### 4. Configure DB Connection
-Update `util/db.py` with your MySQL credentials:
-```python
+### 5.Configure Database Connection
+In \`util/db.py\`, update with your MySQL credentials:
+\`\`\`python
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -76,19 +92,43 @@ def get_connection():
         password="your_password",
         database="task_manager"
     )
-```
+\`\`\`
 
 ---
 
 ##  Running the Flask API Server
-```bash
+\`\`\`bash
 python app.py
-```
-Server will start at:
-```
+\`\`\`
+The server will start at:
+\`\`\`
 http://127.0.0.1:5000
-```
+\`\`\`
+
+You can now use **Postman** or your **frontend HTML pages** to interact with your REST APIs.
 
 ---
 
+## 🖥️ Frontend Access
+
+All HTML pages in the \`frontend/\` directory can be opened in your browser directly and will communicate with your Flask API using \`fetch\` for CRUD operations.
+
+ **Note:** \`index.html\` acts as the **home page of your frontend** for navigating between different functionalities.
+
+---
+
+##  Contributing
+
+Contributions, issue reports, and suggestions are welcome.
+
+---
+
+
+##  Contact
+
+For queries or discussions:
+\`\`\`
+Aaryatha P R
+aaryathaPr@gmail.com
+\`\`\`
 

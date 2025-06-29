@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Assign Task to User</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fceff9, #e0f7fa);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 10px;
+    }
+    .card {
+      backdrop-filter: blur(16px) saturate(180%);
+      background-color: rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    h2 { text-align: center; color: #333; }
+    input, button {
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+    }
+    input {
+      background: #f5f5f5;
+    }
+    button {
+      background: linear-gradient(to right, #ffa5c8, #ffd6d6);
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #message {
+      text-align: center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Assign Task to User</h2>
+    <input type="number" id="taskIdInput" placeholder="Enter Task ID">
+    <input type="number" id="userIdInput" placeholder="Enter User ID">
+    <button onclick="assignTask()">Assign Task</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    async function assignTask() {
+      const taskId = document.getElementById("taskIdInput").value.trim();
+      const userId = document.getElementById("userIdInput").value.trim();
+      const messageDiv = document.getElementById("message");
+
+      if (!taskId || !userId) {
+        alert("Please enter both Task ID and User ID.");
+        return;
+      }
+
+      messageDiv.textContent = "Assigning...";
+      messageDiv.style.color = "#333";
+
+      try {
+        const response = await fetch(`http://localhost:5000/users/${userId}/tasks/${taskId}`, {
+          method: "POST"
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          messageDiv.textContent = data.message || "Task assigned successfully.";
+          messageDiv.style.color = "green";
+          document.getElementById("taskIdInput").value = "";
+          document.getElementById("userIdInput").value = "";
+        } else {
+          messageDiv.textContent = data.error || "Error assigning task.";
+          messageDiv.style.color = "red";
+        }
+      } catch (error) {
+        console.error(error);
+        messageDiv.textContent = "Server error while assigning task.";
+        messageDiv.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
